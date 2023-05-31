@@ -1,5 +1,5 @@
 name: event_api
-description: Holds APIRepository, which is primarily used for making 
+description: Holds APIRepository, which is primarily used for making requests to a server
 version: 0.1.0
 repository: https://github.com/VHCBlade/event_api
 

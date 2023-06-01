@@ -1,10 +1,10 @@
 name: event_api
 description: Holds APIRepository, which is primarily used for making requests to a server
-version: 0.1.0
+version: 0.1.0+1
 repository: https://github.com/VHCBlade/event_api
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: '>=2.19.6 <4.0.0'
 
 dependencies:
   event_authentication: ^0.1.3+1

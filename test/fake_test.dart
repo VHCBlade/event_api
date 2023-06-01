@@ -1,6 +1,4 @@
 import 'package:event_api/event_api.dart';
-import 'package:event_api/src/fake.dart';
-import 'package:event_api/src/response.dart';
 import 'package:event_authentication/event_authentication.dart';
 import 'package:event_db/event_db.dart';
 import 'package:http/http.dart';

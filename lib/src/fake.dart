@@ -4,7 +4,7 @@ import 'package:event_api/event_api.dart';
 import 'package:http/http.dart';
 
 /// A fake version of [APIRequester]. Use this in tests or help develop your
-/// APIs without having to
+/// APIs without having to depend on an external server.
 class FakeAPIRequester implements APIRequester {
   /// [fakeRequestMap] holds the fake responses for requests.
   FakeAPIRequester({
@@ -41,5 +41,41 @@ class FakeAPIRequester implements APIRequester {
     await addToRequest(request);
 
     return fakeRequestMap[urlSuffix]!(request);
+  }
+}
+
+/// A stub version of [APIRequester]. Unlike [FakeAPIRequester], this will
+/// always respond with the same response regardless of the urlSuffix.
+class StubAPIRequester implements APIRequester {
+  /// [stubResponse] is the stub response that will be returned for all requests
+  /// to this reqeuster.
+  StubAPIRequester({
+    required this.stubResponse,
+    this.website = 'https://example.com/',
+    this.apiServer = 'https://api.example.com/',
+  });
+
+  @override
+  final String apiServer;
+
+  @override
+  final String website;
+
+  /// The stub response that will be returned for all requests
+  /// to this reqeuster.
+  final FutureOr<StreamedResponse> Function(Request) stubResponse;
+
+  @override
+  FutureOr<StreamedResponse> request(
+    String method,
+    String urlSuffix,
+    void Function(Request request) addToRequest,
+  ) async {
+    final fullUrl = '$apiServer$urlSuffix';
+    final request = Request(method, Uri.parse(fullUrl));
+
+    addToRequest(request);
+
+    return stubResponse(request);
   }
 }

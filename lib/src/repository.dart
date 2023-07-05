@@ -34,6 +34,15 @@ class APIRepository extends Repository {
     return _jwt = await database.findModel(_encodedJWT);
   }
 
+  /// Deletes the current jwt to perform a logout.
+  Future<void> logout() async {
+    final currentJwt = await jwt;
+    if (currentJwt != null) {
+      await database.deleteModel(currentJwt);
+    }
+    _jwt = null;
+  }
+
   /// Creates a request using [method] to the [urlSuffix] endpoint with
   /// [requester].
   ///

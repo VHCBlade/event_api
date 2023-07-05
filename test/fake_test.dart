@@ -62,6 +62,9 @@ void main() {
       final returnedData = BaseJWT.fromToken(loggedInData);
 
       expect(returnedData.expiry, const Duration(hours: 5));
+
+      await repository.logout();
+      expect(await repository.jwt, null);
     });
   });
 }

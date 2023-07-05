@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Added logout option to APIRepository
+
 ## 0.1.1
 
 - Added ApiDatabaseRepository - an implementation of DatabaseRepository that is backed by an APIRequester

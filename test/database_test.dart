@@ -207,6 +207,7 @@ EmailLoginRequest createRequest() => EmailLoginRequest()
 
 APIRequester createRequester(DatabaseRepository repository) {
   return FakeAPIRequester(
+    fakeMultipartRequestMap: {},
     fakeRequestMap: {
       'cool/value': (request) async {
         switch (request.method) {
@@ -268,6 +269,9 @@ APIRequester createRequester(DatabaseRepository repository) {
 
 APIRequester createNotFoundRequester() {
   return StubAPIRequester(
+    multipartStubResponse: (_) {
+      return StreamedResponse(Stream.value([]), 404);
+    },
     stubResponse: (request) async {
       return StreamedResponse(Stream.value([]), 404);
     },
@@ -276,6 +280,9 @@ APIRequester createNotFoundRequester() {
 
 APIRequester createUnreachableRequester() {
   return StubAPIRequester(
+    multipartStubResponse: (_) {
+      return StreamedResponse(Stream.value([]), 404);
+    },
     stubResponse: (request) async {
       return StreamedResponse(Stream.value([]), 504);
     },

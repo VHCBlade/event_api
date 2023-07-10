@@ -5,11 +5,12 @@ import 'package:http/http.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('FakeAPIRequester', () {
+  group('FakeAPIRequester Multipart', () {
     test('Fail', () async {
       final database =
           FakeDatabaseRepository(constructors: {EncodedJWT: EncodedJWT.new});
       final requester = FakeAPIRequester(
+        fakeMultipartRequestMap: {},
         fakeRequestMap: {},
       );
 
@@ -19,7 +20,7 @@ void main() {
       );
 
       final response =
-          await repository.request('POST', 'login', (request) => null);
+          await repository.multipartRequest('POST', 'login', (request) => null);
 
       expect(response.statusCode, 500);
     });
@@ -27,7 +28,8 @@ void main() {
       final database =
           FakeDatabaseRepository(constructors: {EncodedJWT: EncodedJWT.new});
       final requester = FakeAPIRequester(
-        fakeRequestMap: {
+        fakeRequestMap: {},
+        fakeMultipartRequestMap: {
           'login': (request) async => StreamedResponse(
                 Stream.value([]),
                 200,
@@ -49,14 +51,17 @@ void main() {
       );
 
       final response =
-          await repository.request('POST', 'login', (request) => null);
+          await repository.multipartRequest('POST', 'login', (request) => null);
 
       expect(response.statusCode, 200);
       final jwt = await repository.jwt;
       expect(jwt!.jwt.expiry, const Duration(hours: 5));
 
-      final loggedInResponse =
-          await repository.request('POST', 'loggedIn', (request) => null);
+      final loggedInResponse = await repository.multipartRequest(
+        'POST',
+        'loggedIn',
+        (request) => null,
+      );
 
       final loggedInData = await loggedInResponse.body;
       final returnedData = BaseJWT.fromToken(loggedInData);

@@ -71,6 +71,34 @@ class APIRepository extends Repository {
     return response;
   }
 
+  /// Creates a multipart request using [method] to the [urlSuffix] endpoint
+  /// with [requester].
+  ///
+  /// [addToRequest] is used for addings things like headers to the request
+  /// before sending it.
+  ///
+  /// Automatically adds [jwt] as an Authorization header if it's available.
+  Future<StreamedResponse> multipartRequest(
+    String method,
+    String urlSuffix,
+    FutureOr<void> Function(MultipartRequest request) addToRequest,
+  ) async {
+    final response =
+        await requester.multipartRequest(method, urlSuffix, (request) async {
+      final loadedJwt = await jwt;
+      request.headers.authorization = loadedJwt?.token;
+      addToRequest(request);
+    });
+
+    if (response.headers.authorization == null) {
+      return response;
+    }
+    _jwt = EncodedJWT.fromToken(response.headers.authorization!)
+      ..id = _encodedJWT;
+    database.saveModel(_jwt!);
+    return response;
+  }
+
   @override
   List<BlocEventListener<dynamic>> generateListeners(
     BlocEventChannel channel,
@@ -94,5 +122,15 @@ abstract class APIRequester {
     String method,
     String urlSuffix,
     void Function(Request request) addToRequest,
+  );
+
+  /// Creates a multipart request using [method] to the [urlSuffix] endpoint.
+  ///
+  /// [addToRequest] is used for addings things like headers to the request
+  /// before sending it.
+  FutureOr<StreamedResponse> multipartRequest(
+    String method,
+    String urlSuffix,
+    void Function(MultipartRequest request) addToRequest,
   );
 }

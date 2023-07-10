@@ -9,6 +9,7 @@ class FakeAPIRequester implements APIRequester {
   /// [fakeRequestMap] holds the fake responses for requests.
   FakeAPIRequester({
     required this.fakeRequestMap,
+    required this.fakeMultipartRequestMap,
     this.website = 'https://example.com/',
     this.apiServer = 'https://api.example.com/',
   });
@@ -18,6 +19,12 @@ class FakeAPIRequester implements APIRequester {
   /// The key is the urlSuffix used for the request.
   final Map<String, FutureOr<StreamedResponse> Function(Request)>
       fakeRequestMap;
+
+  /// Holds the fake responses for multipart requests.
+  ///
+  /// The key is the urlSuffix used for the request.
+  final Map<String, FutureOr<StreamedResponse> Function(MultipartRequest)>
+      fakeMultipartRequestMap;
 
   @override
   final String apiServer;
@@ -42,6 +49,24 @@ class FakeAPIRequester implements APIRequester {
 
     return fakeRequestMap[urlSuffix]!(request);
   }
+
+  @override
+  FutureOr<StreamedResponse> multipartRequest(
+    String method,
+    String urlSuffix,
+    FutureOr<void> Function(MultipartRequest request) addToRequest,
+  ) async {
+    if (!fakeMultipartRequestMap.containsKey(urlSuffix)) {
+      return StreamedResponse(Stream.value([]), 500);
+    }
+
+    final fullUrl = '$apiServer$urlSuffix';
+    final request = MultipartRequest(method, Uri.parse(fullUrl));
+
+    await addToRequest(request);
+
+    return fakeMultipartRequestMap[urlSuffix]!(request);
+  }
 }
 
 /// A stub version of [APIRequester]. Unlike [FakeAPIRequester], this will
@@ -51,6 +76,7 @@ class StubAPIRequester implements APIRequester {
   /// to this reqeuster.
   StubAPIRequester({
     required this.stubResponse,
+    required this.multipartStubResponse,
     this.website = 'https://example.com/',
     this.apiServer = 'https://api.example.com/',
   });
@@ -65,6 +91,11 @@ class StubAPIRequester implements APIRequester {
   /// to this reqeuster.
   final FutureOr<StreamedResponse> Function(Request) stubResponse;
 
+  /// The stub response that will be returned for all multipart requests
+  /// to this reqeuster.
+  final FutureOr<StreamedResponse> Function(MultipartRequest)
+      multipartStubResponse;
+
   @override
   FutureOr<StreamedResponse> request(
     String method,
@@ -77,5 +108,19 @@ class StubAPIRequester implements APIRequester {
     addToRequest(request);
 
     return stubResponse(request);
+  }
+
+  @override
+  FutureOr<StreamedResponse> multipartRequest(
+    String method,
+    String urlSuffix,
+    void Function(MultipartRequest request) addToRequest,
+  ) {
+    final fullUrl = '$apiServer$urlSuffix';
+    final request = MultipartRequest(method, Uri.parse(fullUrl));
+
+    addToRequest(request);
+
+    return multipartStubResponse(request);
   }
 }

@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Added MultipartRequests to requirement for APIRequesters
+
 ## 0.1.2
 
 - Added logout option to APIRepository

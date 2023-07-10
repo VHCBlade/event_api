@@ -39,4 +39,25 @@ class ServerAPIRequester implements APIRequester {
       );
     }
   }
+
+  @override
+  FutureOr<StreamedResponse> multipartRequest(
+    String method,
+    String urlSuffix,
+    FutureOr<void> Function(MultipartRequest request) addToRequest,
+  ) async {
+    final fullUrl = '$apiServer$urlSuffix';
+    final request = MultipartRequest(method, Uri.parse(fullUrl));
+    await addToRequest(request);
+    try {
+      return await client.send(request);
+    } on Object {
+      return StreamedResponse(
+        Stream.fromIterable(
+          [utf8.encode('Unable to connect to the server...')],
+        ),
+        504,
+      );
+    }
+  }
 }

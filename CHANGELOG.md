@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Updated http to ^1.0.0
+
 ## 0.2.0
 
 - Added MultipartRequests to requirement for APIRequesters

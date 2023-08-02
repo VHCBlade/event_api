@@ -1,3 +1,7 @@
+## 0.2.2
+
+- Added convenience function for loading bodies in Responses as Lists of a GenericModel
+
 ## 0.2.1
 
 - Updated http to ^1.0.0

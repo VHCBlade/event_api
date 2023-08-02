@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:event_api/event_api.dart';
 import 'package:event_db/event_db.dart';
 import 'package:http/http.dart';
@@ -23,6 +25,17 @@ void main() {
         200,
       );
       expect((await response.bodyAsModel(EncodedJWT.new)).toMap(), jwt.toMap());
+    });
+    test('bodyAsModelList', () async {
+      final jwt = EncodedJWT.fromToken('token')..idSuffix = 'cool';
+      final response = StreamedResponse(
+        Stream.value(json.encode([jwt.toMap(), jwt.toMap()]).codeUnits),
+        200,
+      );
+      expect(
+        (await response.bodyAsModelList(EncodedJWT.new)).map((e) => e.toMap()),
+        [jwt.toMap(), jwt.toMap()],
+      );
     });
   });
 }

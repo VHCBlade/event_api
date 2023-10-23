@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Upgraded event_db to 0.2.0
+
 ## 0.2.2
 
 - Added convenience function for loading bodies in Responses as Lists of a GenericModel

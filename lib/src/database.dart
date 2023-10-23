@@ -8,7 +8,7 @@ import 'package:event_db/event_db.dart';
 /// An implementation of [DatabaseRepository] that relies on an API Server or
 /// [APIRepository] to manage the data.
 class ApiDatabaseRepository extends DatabaseRepository {
-  /// [apiRepository] is the api server where the [GenericModel]s will be stored
+  /// [apiRepository] is the api server where the [BaseModel]s will be stored
   ///
   /// [baseURL] is infixed to all requests. Should not end with /
   ApiDatabaseRepository({
@@ -21,14 +21,14 @@ class ApiDatabaseRepository extends DatabaseRepository {
   /// this repository.
   final Map<Type, ModelConstructor> constructors;
 
-  /// The api server where the [GenericModel]s will be stored
+  /// The api server where the [BaseModel]s will be stored
   final APIRepository apiRepository;
 
   /// Infixed to all requests. Should not end with /
   final String baseURL;
 
   @override
-  FutureOr<bool> deleteModel<T extends GenericModel>(
+  FutureOr<bool> deleteModel<T extends BaseModel>(
     String database,
     T model,
   ) async {
@@ -58,7 +58,7 @@ class ApiDatabaseRepository extends DatabaseRepository {
   }
 
   @override
-  FutureOr<Iterable<T>> findAllModelsOfType<T extends GenericModel>(
+  FutureOr<Iterable<T>> findAllModelsOfType<T extends BaseModel>(
     String database,
     T Function() supplier,
   ) async {
@@ -104,7 +104,7 @@ class ApiDatabaseRepository extends DatabaseRepository {
   }
 
   @override
-  FutureOr<T?> findModel<T extends GenericModel>(
+  FutureOr<T?> findModel<T extends BaseModel>(
     String database,
     String key,
   ) async {
@@ -139,7 +139,7 @@ class ApiDatabaseRepository extends DatabaseRepository {
       [];
 
   @override
-  FutureOr<T> saveModel<T extends GenericModel>(
+  FutureOr<T> saveModel<T extends BaseModel>(
     String database,
     T model,
   ) async {
